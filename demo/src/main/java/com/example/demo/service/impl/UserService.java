@@ -14,8 +14,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User getbyId(int Id) {
-        return userRepository.findById(Id).get();
+    public User getbyId(int userId) {
+        return userRepository.findById(userId).get();
     }
 
     public List<User> getAll() {
@@ -26,7 +26,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void delete(int id) {
-        userRepository.delete(userRepository.findById(id).get());
+    public void delete(int userId) {
+        userRepository.deleteById(userId);
     }
 }
