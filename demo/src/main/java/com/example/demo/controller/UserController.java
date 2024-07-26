@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,10 +16,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @RequestMapping(value = "/api/users")
@@ -41,34 +38,62 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    @GetMapping("id/{id}")
+    public ResponseEntity<?> getUserByID(@PathVariable(name = "id") int userId) {
+        try {
+            User user = userService.getById(userId);
+            if (user == null)
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            else
+                return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("email/{email}")
+    public ResponseEntity<?> getUserByEmail(@PathVariable(name = "email") String email) {
+        try {
+            User user = userService.getByEmail(email);
+            if (user == null)
+               return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            else
+                return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(exception.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @PostMapping
-    public ResponseEntity<User> saveUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> saveUser(@RequestBody UserDTO userDTO) {
 
         try {
-            return new ResponseEntity<>(userService.save(userMapper.userDTOToUser(userDTO)), HttpStatus.OK);
+            //return new ResponseEntity<>(userService.save(userMapper.userDTOToUser(userDTO)), HttpStatus.OK);
+            User user = userService.save(userMapper.userDTOToUser(userDTO));
+            if (user == null)
+                return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            else
+                return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception exception) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     @PutMapping
-    public ResponseEntity<User> updateUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> updateUser(@RequestBody UserDTO userDTO) {
         try {
             return new ResponseEntity<>(userService.save(userMapper.userDTOToUser(userDTO)), HttpStatus.OK);
         } catch (Exception exception) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<User> deleteUser(@PathVariable(name = "id") int userTodeleteId) {
+    public ResponseEntity<?> deleteUser(@PathVariable(name = "id") int userDeleteId) {
         try {
-            System.out.println(userTodeleteId);
-            userService.delete(userTodeleteId);
+            userService.delete(userDeleteId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception exception) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

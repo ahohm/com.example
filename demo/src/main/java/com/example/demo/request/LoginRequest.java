@@ -1,4 +1,5 @@
-package com.example.demo.dto;
+package com.example.demo.request;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDTO {
+public class LoginRequest {
 
-    private int userid;
     private String username;
-    private String email;
-    private String password;
 
+    private String password;
 }
