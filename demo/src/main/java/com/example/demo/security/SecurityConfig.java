@@ -34,7 +34,7 @@ public class SecurityConfig {
     @Value("${com.example.demo.jwtSecret}")
     private String jwtSecret;
 
-    private static final String[] WHITE_LIST_URL = { "/h2-console/**", "/signin", "/signup", "/user-dashboard" };
+    private static final String[] WHITE_LIST_URL = { "/h2-console/**", "/signin", "/signup", "/user-dashboard", "/**" };
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -60,10 +60,10 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req -> req.requestMatchers(WHITE_LIST_URL)
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
+                .authorizeHttpRequests(req -> req
+                        .requestMatchers(WHITE_LIST_URL).permitAll()///revoke-role
+                        .requestMatchers("**/revoke-role").hasRole("ADMIN").anyRequest().authenticated()
+                )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

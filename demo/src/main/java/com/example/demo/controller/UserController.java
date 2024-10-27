@@ -5,20 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.demo.dto.UserDTO;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.service.impl.UserService;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RequestMapping(value = "/api/users")
 @RestController
@@ -94,6 +87,17 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception exception) {
             return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/{username}/revoke-role")
+    public ResponseEntity<?> revokeRoleFromUser(@PathVariable String username, @RequestParam String roleName) {
+        boolean success = userService.revokeRoleFromUser(username, roleName);
+        if (success) {
+            return ResponseEntity.ok("Role revoked successfully");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to revoke role");
         }
     }
 }

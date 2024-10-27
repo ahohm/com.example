@@ -5,18 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDTO {
+public class RoleDTO {
 
-    private int userid;
-    private String username;
-    private String email;
-    private String password;
-    private boolean enable;
+    private int roleId;
+    private String roleType;
 
 }
