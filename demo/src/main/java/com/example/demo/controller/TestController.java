@@ -10,6 +10,6 @@ public class TestController {
 
     @GetMapping
     public String greeting() {
-        return "Hello body";
+        return "Hello buddy";
     }
 }

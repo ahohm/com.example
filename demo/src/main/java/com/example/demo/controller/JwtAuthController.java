@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dao.UserRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.entity.User;
 import com.example.demo.request.LoginRequest;
@@ -43,7 +43,7 @@ public class JwtAuthController {
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity.badRequest()
-                    .body("Error: Username is already taken!");
+                    .body("Error: Email is already taken!");
         }
         User user = new User();
         user.setUsername(signUpRequest.getUsername());
